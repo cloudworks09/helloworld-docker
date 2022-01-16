@@ -1,0 +1,28 @@
+on:
+  push:
+    branches: dev
+
+# Environment variables available to all jobs and steps in this workflow
+#  GKE_EMAIL: ${{ secrets.GKE_EMAIL }} 
+#  GKE_KEY: ${{ secrets.GKE_KEY }} 
+env:
+  GITHUB_SHA: ${{ github.sha }} 
+  GITHUB_REF: ${{ github.ref }} 
+  IMAGE: "helloworld-docker"
+  REGISTRY_HOSTNAME: gcr.io
+
+jobs:
+  integrate-build:
+    name: Integration
+    runs-on: ubuntu-latest   
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup JDK 14
+      uses: actions/setup-java@v1
+      with:
+        java-version: 14
+    
+    - name: Build & Test application
+      run: mvn clean install --file pom.xml
